@@ -1,0 +1,36 @@
+{
+  "name": "jupyterlab-literallycanvas",
+  "version": "0.1.0",
+  "description": "A JupyterLab extension for rendering LiterallyCanvas",
+  "author": "Dead Pixels Collectiv <deathbeds@groups.google.com>",
+  "main": "lib/index.js",
+  "keywords": [
+    "jupyter",
+    "jupyterlab",
+    "jupyterlab-extension"
+  ],
+  "files": [
+    "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
+    "style/**/*.{css,eot,gif,html,jpg,json,png,svg,woff2,ttf}"
+  ],
+  "jupyterlab": {
+    "mimeExtension": true
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "watch": "tcs -w",
+    "extension:install": "jupyter labextension install jupyterlab-literallycanvas",
+    "extension:uninstall": "jupyter labextension uninstall  jupyterlab-literallycanvas",
+    "extension:enable": "jupyter labextension enable jupyterlab-literallycanvas",
+    "extension:disable": "jupyter labextension disable jupyterlab-literallycanvas"
+  },
+  "dependencies": {
+    "@jupyterlab/rendermime-interfaces": "^1.0.0",
+    "@phosphor/widgets": "^1.5.0"
+  },
+  "devDependencies": {
+    "rimraf": "^2.6.2",
+    "typescript": "~2.4.0"
+  }
+}
