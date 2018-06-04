@@ -1,6 +1,10 @@
 # jupyterlab-literallycanvas
+[![binder-badge][]][binder]
 
-A JupyterLab MIME renderer for SVG, PNG and literallycanvas JSON
+A JupyterLab MIME renderer/editor for literallycanvas JSON
+
+[binder]: https://mybinder.org/v2/gh/bollwyvl/jupyterlab-literallycanvas/master?urlpath=lab
+[binder-badge]: https://mybinder.org/static/images/badge.svg
 
 ## Prerequisites
 
@@ -14,16 +18,24 @@ jupyter labextension install jupyterlab-literallycanvas
 
 ## Development
 
-For a development install (requires npm version 4 or later), do the following in the repository directory:
+For a development install (requires nodejs), do the following in the repository directory:
 
 ```bash
-npm install
-jupyter labextension link .
+jlpm
+jlpm build
+jlpm ext:link
 ```
 
 To rebuild the package and the JupyterLab app:
 
 ```bash
-npm run build
+jlpm build
 jupyter lab build
+```
+
+To continuously rebuild
+```bash
+jlpm watch
+# in another terminal
+jupyter lab build --watch
 ```
