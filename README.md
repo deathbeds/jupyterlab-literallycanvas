@@ -2,7 +2,6 @@
 
 A JupyterLab MIME renderer for SVG, PNG and literallycanvas JSON
 
-
 ## Prerequisites
 
 * JupyterLab
@@ -28,4 +27,3 @@ To rebuild the package and the JupyterLab app:
 npm run build
 jupyter lab build
 ```
-

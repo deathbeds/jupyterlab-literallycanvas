@@ -1,0 +1,28 @@
+:root {
+  --jp-lc-icon-pencil: url(img/gesture.svg);
+  --jp-lc-icon-eraser: url(img/eraser.svg);
+  --jp-lc-icon-text: url(img/text.svg);
+  --jp-lc-icon-line: var(--jp-icon-edit);
+  --jp-lc-icon-ellipse: var(--jp-icon-circle);
+}
+
+.jp-LiterallyCanvas-Tool-pencil {
+  background-image: var(--jp-lc-icon-pencil);
+}
+
+.jp-LiterallyCanvas-Tool-eraser {
+  background-image: var(--jp-lc-icon-eraser);
+}
+
+.jp-LiterallyCanvas-Tool-line {
+  background-image: var(--jp-lc-icon-line);
+}
+
+.jp-LiterallyCanvas-Tool-ellipse {
+  background-image: var(--jp-lc-icon-ellipse);
+}
+
+
+.jp-LiterallyCanvas-Tool-text {
+  background-image: var(--jp-lc-icon-text);
+}
