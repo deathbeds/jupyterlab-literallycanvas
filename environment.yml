@@ -13,4 +13,4 @@ dependencies:
   - python >=3.6,<3.7
   - robotframework-seleniumlibrary
   - pip:
-    - beautysh
+      - beautysh

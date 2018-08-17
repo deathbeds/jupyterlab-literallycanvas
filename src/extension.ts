@@ -1,36 +1,47 @@
-import {IRenderMime} from '@jupyterlab/rendermime-interfaces';
+import {JupyterLab, JupyterLabPlugin} from '@jupyterlab/application';
 
-import {MIME_TYPES, PLUGIN_ID} from '.';
-import {LiterallyDesktop} from './widget';
-/**
- * A mime renderer factory for LiterallyCanvas data.
- */
-export const rendererFactory: IRenderMime.IRendererFactory = {
-  safe: true,
-  mimeTypes: MIME_TYPES,
-  createRenderer: (options) => new LiterallyDesktop(options),
+import {IFileBrowserFactory} from '@jupyterlab/filebrowser';
+import {ILauncher} from '@jupyterlab/launcher';
+
+import {LAUNCHER_PLUGIN_ID, CMD} from '.';
+
+const extension: JupyterLabPlugin<void> = {
+  id: LAUNCHER_PLUGIN_ID,
+  autoStart: true,
+  optional: [ILauncher],
+  requires: [IFileBrowserFactory],
+  activate: (
+    app: JupyterLab,
+    browserFactory: IFileBrowserFactory,
+    launcher?: ILauncher
+  ) => {
+    const {commands} = app;
+
+    let opts = {type: 'file', ext: '.literallycanvas'};
+
+    // Add a command for creating a new diagram file.
+    commands.addCommand(CMD.NEW_LC, {
+      label: 'Canvas',
+      iconClass: 'jp-MaterialIcon jp-LiterallyCanvasIcon',
+      caption: 'Create a new canvas. Literally.',
+      execute: async () => {
+        let {path} = browserFactory.defaultBrowser.model;
+        let model = await commands.execute(CMD.NEW_DOC, {path, ...opts});
+        model.content = '{}';
+        let res = await commands.execute(CMD.OPEN_DOC, {path: model.path});
+        console.log(res);
+        return res;
+      },
+    });
+
+    if (launcher) {
+      launcher.add({
+        command: CMD.NEW_LC,
+        rank: 1,
+        category: 'Other',
+      });
+    }
+  },
 };
 
-const extensions: IRenderMime.IExtension | IRenderMime.IExtension[] = [
-  {
-    id: PLUGIN_ID,
-    rendererFactory,
-    rank: 0,
-    dataType: 'string',
-    fileTypes: [
-      {
-        name: 'literallycanvas',
-        mimeTypes: ['application/literallycanvas+json'],
-        extensions: ['.literallycanvas', '.literallycanvas.json'],
-      },
-    ],
-    documentWidgetFactoryOptions: {
-      name: 'Canvas (literally)',
-      primaryFileType: 'literallycanvas',
-      fileTypes: ['literallycanvas', 'json'],
-      defaultFor: ['literallycanvas'],
-    },
-  },
-];
-
-export default extensions;
+export default extension;

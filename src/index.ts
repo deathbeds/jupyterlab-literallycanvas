@@ -1,3 +1,5 @@
+import {Widget} from '@phosphor/widgets';
+
 /**
  * The default mime type for the extension.
  */
@@ -9,9 +11,10 @@ export const MIME_TYPES = ['application/literallycanvas+json'];
 export const CLASS_NAME = 'jp-OutputWidgetLiterallyCanvas';
 
 /**
- * The plugin id
+ * The plugin ids
  */
-export const PLUGIN_ID = 'jupyterlab-literallycanvas:plugin';
+export const MIME_PLUGIN_ID = 'jupyterlab-literallycanvas:mime';
+export const LAUNCHER_PLUGIN_ID = 'jupyterlab-literallycanvas:launcher';
 
 export const TOOL_PREFIX = 'jp-LiterallyCanvas-Tool';
 
@@ -24,13 +27,23 @@ export const TYPES: {
   },
 };
 
-export const DEFAULT_TOOLS = {
-  pencil: (LC: any, lc: any) => new LC.tools.Pencil(lc),
-  eraser: (LC: any, lc: any) => new LC.tools.Eraser(lc),
-  line: (LC: any, lc: any) => new LC.tools.Line(lc),
-  ellipse: (LC: any, lc: any) => new LC.tools.Ellipse(lc),
-  text: (LC: any, lc: any) => new LC.tools.Text(lc),
-  // LC.tools.Polygon,
-  // LC.tools.Pan,
-  // LC.tools.Eyedropper
+export interface ILiterallyCanvas extends Widget {
+  undo(): void;
+  redo(): void;
+  fullscreen(): void;
+}
+
+export interface ILiterallyDesktop extends Widget {
+  fullscreen(): void;
+}
+
+export interface ITool {
+  tool?: (LC: any, lc: ILiterallyCanvas) => any;
+  action?: (lc: ILiterallyCanvas) => any;
+}
+
+export const CMD = {
+  NEW_DOC: 'docmanager:new-untitled',
+  OPEN_DOC: 'docmanager:open',
+  NEW_LC: 'literallycanvas:new-untitled',
 };

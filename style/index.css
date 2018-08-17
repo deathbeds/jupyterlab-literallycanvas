@@ -1,9 +1,34 @@
 :root {
+  --jp-lc-icon: url(img/palette.svg);
+}
+
+.jp-OutputWidgetLiterallyCanvas {
+  --jp-lc-tool-size: 2rem;
+  --jp-private-toolbar-height: var(--jp-lc-tool-size);
+
   --jp-lc-icon-pencil: url(img/gesture.svg);
   --jp-lc-icon-eraser: url(img/eraser.svg);
   --jp-lc-icon-text: url(img/text.svg);
+  --jp-lc-icon-pan: url(img/pan.svg);
+  --jp-lc-icon-select: url(img/select.svg);
+  --jp-lc-icon-fullscreen: url(img/fullscreen.svg);
+
   --jp-lc-icon-line: var(--jp-icon-edit);
   --jp-lc-icon-ellipse: var(--jp-icon-circle);
+  --jp-lc-icon-undo: var(--jp-icon-undo);
+}
+
+.jp-LiterallyCanvas {
+  display: flex;
+  flex-direction: column;
+}
+
+.jp-LiterallyCanvas > * {
+  flex: 1;
+}
+
+.jp-LiterallyCanvasIcon {
+  background-image: var(--jp-lc-icon);
 }
 
 .jp-LiterallyCanvas-Tool-pencil {
@@ -24,4 +49,41 @@
 
 .jp-LiterallyCanvas-Tool-text {
   background-image: var(--jp-lc-icon-text);
+}
+
+.jp-LiterallyCanvas-Tool-undo {
+  background-image: var(--jp-lc-icon-undo);
+}
+
+.jp-LiterallyCanvas-Tool-pan {
+  background-image: var(--jp-lc-icon-pan);
+}
+
+.jp-LiterallyCanvas-Tool-select {
+  background-image: var(--jp-lc-icon-select);
+}
+
+.jp-LiterallyCanvas-Tool-fullscreen {
+  background-image: var(--jp-lc-icon-fullscreen);
+}
+
+.jp-LiterallyCanvas-Tool-redo {
+  background-image: var(--jp-lc-icon-undo);
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  filter: FlipH;
+  -ms-filter: "FlipH";
+}
+
+.jp-OutputWidgetLiterallyCanvas .jp-Toolbar .jp-Toolbar-button {
+  height: var(--jp-lc-tool-size);
+  width: var(--jp-lc-tool-size);
+  background-size: 80%;
+}
+
+.jp-OutputWidgetLiterallyCanvas canvas {
+  width: 100%;
+  height: 100%;
 }

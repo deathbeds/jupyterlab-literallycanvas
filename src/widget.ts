@@ -7,12 +7,49 @@ import {Toolbar, ToolbarButton} from '@jupyterlab/apputils';
 import {Widget, BoxPanel, BoxLayout} from '@phosphor/widgets';
 import {Signal} from '@phosphor/signaling';
 
-import {CLASS_NAME, DEFAULT_TOOLS, TOOL_PREFIX} from '.';
+import {CLASS_NAME, ITool, TOOL_PREFIX, ILiterallyCanvas, ILiterallyDesktop} from '.';
+
+import * as fscreen from 'fscreen';
 
 import '../style/literallycanvas.css';
 import '../style/index.css';
 
-export class LiterallyCanvas extends Widget {
+export const DEFAULT_TOOLS: {[key: string]: ITool} = {
+  select: {
+    tool: (LC, lc) => new LC.tools.SelectShape(lc),
+  },
+  pencil: {
+    tool: (LC, lc) => new LC.tools.Pencil(lc),
+  },
+  eraser: {
+    tool: (LC, lc) => new LC.tools.Eraser(lc),
+  },
+  line: {
+    tool: (LC, lc) => new LC.tools.Line(lc),
+  },
+  ellipse: {
+    tool: (LC, lc) => new LC.tools.Ellipse(lc),
+  },
+  text: {
+    tool: (LC, lc) => new LC.tools.Text(lc),
+  },
+  undo: {
+    action: (lc) => lc.undo(),
+  },
+  redo: {
+    action: (lc) => lc.redo(),
+  },
+  // LC.tools.Polygon,
+  // LC.tools.Eyedropper,
+  pan: {
+    tool: (LC, lc) => new LC.tools.Pan(lc),
+  },
+  fullscreen: {
+    action: (lc) => lc.fullscreen(),
+  },
+};
+
+export class LiterallyCanvas extends Widget implements ILiterallyCanvas {
   private _canvas: any;
   private _wrapper: HTMLDivElement;
   private _lastRender: string;
@@ -26,6 +63,19 @@ export class LiterallyCanvas extends Widget {
     super();
     this._wrapper = document.createElement('div');
     this.node.appendChild(this._wrapper);
+    this.addClass('jp-LiterallyCanvas');
+  }
+
+  undo() {
+    this._canvas.undo();
+  }
+
+  redo() {
+    this._canvas.redo();
+  }
+
+  fullscreen() {
+    fscreen.default.requestFullscreen(this.node);
   }
 
   get drawingChanged() {
@@ -36,19 +86,20 @@ export class LiterallyCanvas extends Widget {
     if (this._canvas == null) {
       this._LC = await new Promise((resolve, reject) =>
         require.ensure(
-          ['./literallycanvas'],
-          (require) => resolve(require('./literallycanvas') as any),
+          ['literallycanvas/lib/js/literallycanvas-core'],
+          (require) =>
+            resolve(require('literallycanvas/lib/js/literallycanvas-core') as any),
           (err: any) => [console.error(err), reject(err)],
           'literallycanvas'
         )
       );
       this._canvas = this._LC.init(this._wrapper, {
-        imageSize: {
-          width: 800,
-          height: 800,
-        },
+        // imageSize: {
+        //   width: window.innerWidth,
+        //   height: window.innerHeight,
+        // },
       });
-      this._canvas.on('drawingChange', (evt: any) => {
+      this._canvas.on('drawingChange', () => {
         this._drawingChanged.emit(void 0);
       });
     }
@@ -70,11 +121,19 @@ export class LiterallyCanvas extends Widget {
     canvas.loadSnapshot(JSON.parse(snapshot));
   }
 
+  resize(msg: Widget.ResizeMessage): void {
+    super.onResize(msg);
+    if (this._canvas) {
+      this._canvas.backgroundCanvas.width = msg.width;
+      this._canvas.backgroundCanvas.height = msg.height;
+    }
+  }
+
   setTool(toolName: string) {
     let tool = this._tools.get(toolName);
     if (tool == null) {
       try {
-        tool = (DEFAULT_TOOLS as any)[toolName](this._LC, this._canvas);
+        tool = DEFAULT_TOOLS[toolName].tool(this._LC, this._canvas);
       } catch (err) {
         console.warn(err);
       }
@@ -91,7 +150,8 @@ export class LiterallyCanvas extends Widget {
 /**
  * A widget for rendering LiterallyCanvas.
  */
-export class LiterallyDesktop extends BoxPanel implements IRenderMime.IRenderer {
+export class LiterallyDesktop extends BoxPanel
+  implements IRenderMime.IRenderer, ILiterallyDesktop {
   private _mimeType: string;
   private _canvas: LiterallyCanvas;
   private _model: IRenderMime.IMimeModel;
@@ -127,14 +187,31 @@ export class LiterallyDesktop extends BoxPanel implements IRenderMime.IRenderer 
 
   makeTools() {
     Object.keys(DEFAULT_TOOLS).forEach((toolName) => {
-      console.log(toolName);
-      const tool = new ToolbarButton({
+      const tool = DEFAULT_TOOLS[toolName];
+      const toolButton = new ToolbarButton({
         className: `${TOOL_PREFIX} ${TOOL_PREFIX}-${toolName}`,
         tooltip: toolName,
-        onClick: () => this._canvas.setTool(toolName),
+        onClick: () => {
+          if (DEFAULT_TOOLS[toolName].tool) {
+            this._canvas.setTool(toolName);
+          } else if (DEFAULT_TOOLS[toolName].action) {
+            tool.action(this._canvas);
+          } else {
+            console.log('unknown tool', tool);
+          }
+        },
       });
-      this._toolbar.addItem(toolName, tool);
+      this._toolbar.addItem(toolName, toolButton);
     });
+  }
+
+  fullscreen() {
+    fscreen.default.requestFullscreen(this.node);
+  }
+
+  protected onResize(msg: Widget.ResizeMessage): void {
+    super.onResize(msg);
+    this._canvas.resize(msg);
   }
 
   /**
@@ -145,6 +222,6 @@ export class LiterallyDesktop extends BoxPanel implements IRenderMime.IRenderer 
       this._model = model;
     }
     let shapes = (this._model as any).data[this._mimeType] as string;
-    await this._canvas.setShapshot(shapes);
+    await this._canvas.setShapshot(shapes || '{}');
   }
 }

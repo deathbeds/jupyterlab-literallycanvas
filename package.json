@@ -1,13 +1,19 @@
 {
   "author": "Dead Pixels Collective",
   "dependencies": {
+    "@jupyterlab/application": "^0.17.0",
     "@jupyterlab/apputils": "^0.17.0",
+    "@jupyterlab/launcher": "^0.17.2",
     "@jupyterlab/rendermime-interfaces": "^1.1.0",
-    "@phosphor/widgets": "^1.6.0"
+    "@jupyterlab/filebrowser": "^0.17.3",
+    "@phosphor/widgets": "^1.6.0",
+    "literallycanvas": "^0.5.2",
+    "fscreen": "^1.0.2"
   },
   "description": "A JupyterLab extension for rendering a Canvas. Literally.",
   "devDependencies": {
     "@types/webpack-env": "~1.13.6",
+    "@types/fscreen": "~1.0.0",
     "prettier": "1.14.0",
     "rimraf": "^2.6.2",
     "tslint": "^5.10.0",
@@ -17,7 +23,8 @@
     "{lib,style}/**/*.{css,d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}"
   ],
   "jupyterlab": {
-    "mimeExtension": "lib/extension.js"
+    "extension": "lib/extension.js",
+    "mimeExtension": "lib/mimeExtension.js"
   },
   "keywords": [
     "jupyter",
@@ -36,7 +43,7 @@
     "ext:install": "jupyter labextension install . --no-build",
     "ext:uninstall": "jupyter labextension uninstall @deathbeds/jupyterlab-literallycanvas",
     "lint": "jlpm lint:prettier && jlpm lint:tslint",
-    "lint:prettier": "prettier --write ./src/**/*.ts ./style/**/*.css ./*.json ./*.md",
+    "lint:prettier": "prettier --write ./src/**/*.ts ./style/**/*.css ./*.json ./*.md, ./*.yml",
     "lint:tslint": "tslint --fix ./src/**/*.ts",
     "watch": "tsc -w"
   },
