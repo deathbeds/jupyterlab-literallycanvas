@@ -1,7 +1,9 @@
+.ipynb_checkpoints
+.projectignore
 *.bundle.*
+*.egg-info/
+*.log
+anaconda-project*
+envs/
 lib/
 node_modules/
-*.egg-info/
-envs/
-*.log
-.ipynb_checkpoints

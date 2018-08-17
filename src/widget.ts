@@ -1,3 +1,5 @@
+// tslint:disable-next-line
+/// <reference path="../node_modules/@types/webpack-env/index.d.ts"/>
 import {IRenderMime} from '@jupyterlab/rendermime-interfaces';
 
 import {Toolbar, ToolbarButton} from '@jupyterlab/apputils';
@@ -30,15 +32,21 @@ export class LiterallyCanvas extends Widget {
     return this._drawingChanged;
   }
 
-
   async getCanvas() {
     if (this._canvas == null) {
-      this._LC = (await import('./literallycanvas')) as any;
+      this._LC = await new Promise((resolve, reject) =>
+        require.ensure(
+          ['./literallycanvas'],
+          (require) => resolve(require('./literallycanvas') as any),
+          (err: any) => [console.error(err), reject(err)],
+          'literallycanvas'
+        )
+      );
       this._canvas = this._LC.init(this._wrapper, {
         imageSize: {
           width: 800,
           height: 800,
-        }
+        },
       });
       this._canvas.on('drawingChange', (evt: any) => {
         this._drawingChanged.emit(void 0);
@@ -105,8 +113,8 @@ export class LiterallyDesktop extends BoxPanel implements IRenderMime.IRenderer 
       }
       this._model.setData({
         data: {
-          [this._mimeType]: await this._canvas.getSnapshot()
-        }
+          [this._mimeType]: await this._canvas.getSnapshot(),
+        },
       });
     });
 
@@ -123,7 +131,7 @@ export class LiterallyDesktop extends BoxPanel implements IRenderMime.IRenderer 
       const tool = new ToolbarButton({
         className: `${TOOL_PREFIX} ${TOOL_PREFIX}-${toolName}`,
         tooltip: toolName,
-        onClick: () => this._canvas.setTool(toolName)
+        onClick: () => this._canvas.setTool(toolName),
       });
       this._toolbar.addItem(toolName, tool);
     });

@@ -11,25 +11,26 @@ export const rendererFactory: IRenderMime.IRendererFactory = {
   createRenderer: (options) => new LiterallyDesktop(options),
 };
 
-
 const extensions: IRenderMime.IExtension | IRenderMime.IExtension[] = [
   {
     id: PLUGIN_ID,
     rendererFactory,
     rank: 0,
     dataType: 'string',
-    fileTypes: [{
-      name: 'literallycanvas',
-      mimeTypes: ['application/literallycanvas+json'],
-      extensions: ['.literallycanvas', '.literallycanvas.json'],
-    }],
+    fileTypes: [
+      {
+        name: 'literallycanvas',
+        mimeTypes: ['application/literallycanvas+json'],
+        extensions: ['.literallycanvas', '.literallycanvas.json'],
+      },
+    ],
     documentWidgetFactoryOptions: {
       name: 'Canvas (literally)',
       primaryFileType: 'literallycanvas',
       fileTypes: ['literallycanvas', 'json'],
-      defaultFor: ['literallycanvas']
-    }
-  }
+      defaultFor: ['literallycanvas'],
+    },
+  },
 ];
 
 export default extensions;

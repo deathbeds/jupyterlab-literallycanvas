@@ -1,40 +1,44 @@
 {
-  "name": "jupyterlab-literallycanvas",
-  "version": "0.1.0",
+  "author": "Dead Pixels Collective",
+  "dependencies": {
+    "@jupyterlab/apputils": "^0.17.0",
+    "@jupyterlab/rendermime-interfaces": "^1.1.0",
+    "@phosphor/widgets": "^1.6.0"
+  },
   "description": "A JupyterLab extension for rendering a Canvas. Literally.",
-  "author": "Dead Pixels Collectiv <deathbeds@groups.google.com>",
-  "main": "lib/index.js",
-  "keywords": ["jupyter", "jupyterlab", "jupyterlab-extension"],
+  "devDependencies": {
+    "@types/webpack-env": "~1.13.6",
+    "prettier": "1.14.0",
+    "rimraf": "^2.6.2",
+    "tslint": "^5.10.0",
+    "typescript": "^2.9.2"
+  },
   "files": [
     "{lib,style}/**/*.{css,d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}"
   ],
   "jupyterlab": {
     "mimeExtension": "lib/extension.js"
   },
+  "keywords": [
+    "jupyter",
+    "jupyterlab",
+    "jupyterlab-extension"
+  ],
   "license": "BSD-3-Clause",
+  "main": "lib/index.js",
+  "name": "jupyterlab-literallycanvas",
   "scripts": {
+    "bootstrap": "jlpm --no-optional --prefer-offline || jlpm --no-optional || jlpm && jlpm lint && jlpm build && jlpm ext:install",
     "build": "tsc",
-    "watch": "tsc -w",
-    "ext:install": "jupyter labextension install . --no-build",
-    "ext:uninstall":
-      "jupyter labextension uninstall @deathbeds/jupyterlab-literallycanvas",
-    "ext:enable": "jupyter labextension enable @deathbeds/jupyterlab-literallycanvas",
+    "clean": "rm -rf lib",
     "ext:disable": "jupyter labextension disable @deathbeds/jupyterlab-literallycanvas",
-    "bootstrap":
-      "jlpm --no-optional --prefer-offline && jlpm build && jlpm ext:install",
+    "ext:enable": "jupyter labextension enable @deathbeds/jupyterlab-literallycanvas",
+    "ext:install": "jupyter labextension install . --no-build",
+    "ext:uninstall": "jupyter labextension uninstall @deathbeds/jupyterlab-literallycanvas",
     "lint": "jlpm lint:prettier && jlpm lint:tslint",
+    "lint:prettier": "prettier --write ./src/**/*.ts ./style/**/*.css ./*.json ./*.md",
     "lint:tslint": "tslint --fix ./src/**/*.ts",
-    "lint:prettier": "prettier --write ./src/**/*.ts ./style/**/*.css ./*.json ./*.md"
+    "watch": "tsc -w"
   },
-  "dependencies": {
-    "@jupyterlab/rendermime-interfaces": "^1.0.9",
-    "@phosphor/widgets": "^1.5.0",
-    "@jupyterlab/apputils": "^0.16.3"
-  },
-  "devDependencies": {
-    "rimraf": "^2.6.2",
-    "typescript": "~2.9.0",
-    "prettier": "1.12.1",
-    "tslint": "^5.10.0"
-  }
+  "version": "0.2.0"
 }
