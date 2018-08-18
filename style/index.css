@@ -1,28 +1,133 @@
 :root {
-  --jp-lc-icon-pencil: url(img/gesture.svg);
-  --jp-lc-icon-eraser: url(img/eraser.svg);
-  --jp-lc-icon-text: url(img/text.svg);
-  --jp-lc-icon-line: var(--jp-icon-edit);
-  --jp-lc-icon-ellipse: var(--jp-icon-circle);
+  --jp-lc-icon: url(img/palette.svg);
 }
 
-.jp-LiterallyCanvas-Tool-pencil {
+.jp-LiterallyCanvas {
+  --jp-lc-tool-size: 2rem;
+  --jp-lc-tool-shadow: inset 0 0px 1px rgba(0, 0, 0, 0.5);
+  --jp-private-toolbar-height: unset;
+
+  --jp-lc-icon-ellipse: var(--jp-icon-circle);
+  --jp-lc-icon-eraser: url(img/eraser.svg);
+  --jp-lc-icon-fullscreen: url(img/fullscreen.svg);
+  --jp-lc-icon-line: var(--jp-icon-edit);
+  --jp-lc-icon-pan: url(img/pan.svg);
+  --jp-lc-icon-pencil: url(img/gesture.svg);
+  --jp-lc-icon-polygon: url(img/polygon.svg);
+  --jp-lc-icon-rectangle: url(img/rectangle.svg);
+  --jp-lc-icon-select: url(img/select.svg);
+  --jp-lc-icon-text: url(img/text.svg);
+  --jp-lc-icon-undo: var(--jp-icon-undo);
+}
+
+.jp-LiterallyCanvas {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  min-height: calc(13 * var(--jp-lc-tool-size));
+  overflow: hidden;
+}
+
+.jp-OutputArea-output.jp-LiterallyCanvas {
+  overflow: hidden;
+}
+
+.jp-LiterallyCanvas .literally {
+  flex: 1;
+}
+
+.jp-LiterallyCanvas-Toolbar {
+  display: block;
+  min-width: calc(2 * var(--jp-lc-tool-size) + 0.25rem);
+  border: 0;
+}
+
+.jp-LiterallyCanvas-Toolbar .jp-Toolbar-button {
+  height: var(--jp-lc-tool-size);
+  width: var(--jp-lc-tool-size);
+  background-size: 80%;
+}
+
+.jp-LiterallyCanvasIcon {
+  background-image: var(--jp-lc-icon);
+}
+
+.jp-LiterallyCanvas-Tool-Pencil {
   background-image: var(--jp-lc-icon-pencil);
 }
 
-.jp-LiterallyCanvas-Tool-eraser {
+.jp-LiterallyCanvas-Tool-Eraser {
   background-image: var(--jp-lc-icon-eraser);
 }
 
-.jp-LiterallyCanvas-Tool-line {
+.jp-LiterallyCanvas-Tool-Line {
   background-image: var(--jp-lc-icon-line);
 }
 
-.jp-LiterallyCanvas-Tool-ellipse {
+.jp-LiterallyCanvas-Tool-Ellipse {
   background-image: var(--jp-lc-icon-ellipse);
 }
 
+.jp-LiterallyCanvas-Tool-Rectangle {
+  background-image: var(--jp-lc-icon-rectangle);
+}
 
-.jp-LiterallyCanvas-Tool-text {
+.jp-LiterallyCanvas-Tool-Polygon {
+  background-image: var(--jp-lc-icon-polygon);
+}
+
+.jp-LiterallyCanvas-Tool-Text {
   background-image: var(--jp-lc-icon-text);
+}
+
+.jp-LiterallyCanvas-Tool-Undo {
+  background-image: var(--jp-lc-icon-undo);
+}
+
+.jp-LiterallyCanvas-Tool-Pan {
+  background-image: var(--jp-lc-icon-pan);
+}
+
+.jp-LiterallyCanvas-Tool-SelectShape {
+  background-image: var(--jp-lc-icon-select);
+}
+
+.jp-LiterallyCanvas-Tool-Fullscreen {
+  background-image: var(--jp-lc-icon-fullscreen);
+}
+
+.jp-LiterallyCanvas-Tool-Redo {
+  background-image: var(--jp-lc-icon-undo);
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  filter: FlipH;
+  -ms-filter: "FlipH";
+}
+
+.jp-LiterallyCanvas-Toolbar[data-tool="SelectShape"] .jp-LiterallyCanvas-Tool-SelectShape,
+.jp-LiterallyCanvas-Toolbar[data-tool="Pencil"] .jp-LiterallyCanvas-Tool-Pencil,
+.jp-LiterallyCanvas-Toolbar[data-tool="Eraser"] .jp-LiterallyCanvas-Tool-Eraser,
+.jp-LiterallyCanvas-Toolbar[data-tool="Pan"] .jp-LiterallyCanvas-Tool-Pan,
+.jp-LiterallyCanvas-Toolbar[data-tool="Ellipse"] .jp-LiterallyCanvas-Tool-Ellipse,
+.jp-LiterallyCanvas-Toolbar[data-tool="Text"] .jp-LiterallyCanvas-Tool-Text,
+.jp-LiterallyCanvas-Toolbar[data-tool="Line"] .jp-LiterallyCanvas-Tool-Line {
+    background-color: var(--jp-toolbar-active-background);
+    box-shadow: var(--jp-lc-tool-shadow);
+}
+
+/* color stuff */
+
+.jp-LiterallyCanvas-Color {
+  border-radius: var(--jp-lc-tool-size);
+  border: var(--jp-border-width) solid var(--jp-toolbar-border-color);
+}
+
+.jp-LiterallyCanvas-Color input {
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }

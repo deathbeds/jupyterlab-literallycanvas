@@ -1,19 +1,28 @@
 # jupyterlab-literallycanvas
+
 [![binder-badge][]][binder]
 
 A JupyterLab MIME renderer/editor for literallycanvas JSON
 
-[binder]: https://mybinder.org/v2/gh/bollwyvl/jupyterlab-literallycanvas/master?urlpath=lab
+[binder]: https://mybinder.org/v2/gh/deathbeds/jupyterlab-literallycanvas/master?urlpath=lab
 [binder-badge]: https://mybinder.org/static/images/badge.svg
 
 ## Prerequisites
 
-* JupyterLab
+- JupyterLab 0.33
+- NodeJS LTS 8
+
+> For example
+
+```bash
+conda install -c conda-forge nodejs=8 jupyterlab=0.33
+```
 
 ## Installation
 
 ```bash
-jupyter labextension install jupyterlab-literallycanvas
+jupyter labextension install @deathbeds/jupyterlab-literallycanvas --no-build
+jupyter lab build --dev
 ```
 
 ## Development
@@ -21,9 +30,7 @@ jupyter labextension install jupyterlab-literallycanvas
 For a development install (requires nodejs), do the following in the repository directory:
 
 ```bash
-jlpm
-jlpm build
-jlpm ext:link
+jlpm bootstrap
 ```
 
 To rebuild the package and the JupyterLab app:
@@ -34,6 +41,7 @@ jupyter lab build
 ```
 
 To continuously rebuild
+
 ```bash
 jlpm watch
 # in another terminal
