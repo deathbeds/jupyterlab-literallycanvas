@@ -196,6 +196,9 @@ export class LiterallyDesktop extends BoxPanel
     BoxLayout.setStretch(this._canvas, 1);
     layout.addWidget(this._toolbar);
     layout.addWidget(this._canvas);
+    setTimeout(() => {
+      this._canvas.resizeCanvas();
+    }, 100);
   }
 
   makeTools() {
