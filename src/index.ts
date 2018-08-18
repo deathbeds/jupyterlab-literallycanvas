@@ -14,8 +14,8 @@ export const TOOLBAR_CLASS = `${CLASS_NAME}-Toolbar`;
 /**
  * The plugin ids
  */
-export const MIME_PLUGIN_ID = 'jupyterlab-literallycanvas:mime';
-export const LAUNCHER_PLUGIN_ID = 'jupyterlab-literallycanvas:launcher';
+export const MIME_PLUGIN_ID = '@deathbeds/jupyterlab-literallycanvas:mime';
+export const LAUNCHER_PLUGIN_ID = '@deathbeds/jupyterlab-literallycanvas:launcher';
 
 export const TOOL_PREFIX = `${CLASS_NAME}-Tool`;
 

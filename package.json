@@ -33,7 +33,7 @@
   ],
   "license": "BSD-3-Clause",
   "main": "lib/index.js",
-  "name": "jupyterlab-literallycanvas",
+  "name": "@deathbeds/jupyterlab-literallycanvas",
   "scripts": {
     "bootstrap": "jlpm --no-optional --prefer-offline || jlpm --no-optional || jlpm && jlpm lint && jlpm build && jlpm ext:install",
     "build": "tsc",

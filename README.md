@@ -4,7 +4,7 @@
 
 A JupyterLab MIME renderer/editor for literallycanvas JSON
 
-[binder]: https://mybinder.org/v2/gh/bollwyvl/jupyterlab-literallycanvas/master?urlpath=lab
+[binder]: https://mybinder.org/v2/gh/deathbeds/jupyterlab-literallycanvas/master?urlpath=lab
 [binder-badge]: https://mybinder.org/static/images/badge.svg
 
 ## Prerequisites
@@ -21,7 +21,7 @@ conda install -c conda-forge nodejs=8 jupyterlab=0.33
 ## Installation
 
 ```bash
-jupyter labextension install jupyterlab-literallycanvas --no-build
+jupyter labextension install @deathbeds/jupyterlab-literallycanvas --no-build
 jupyter lab build --dev
 ```
 
