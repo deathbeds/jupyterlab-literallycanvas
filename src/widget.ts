@@ -7,7 +7,7 @@ import {Toolbar, ToolbarButton} from '@jupyterlab/apputils';
 import {Widget, BoxPanel, BoxLayout} from '@phosphor/widgets';
 import {Signal} from '@phosphor/signaling';
 
-import {CLASS_NAME, ITool, TOOL_PREFIX, ILiterallyCanvas, ILiterallyDesktop} from '.';
+import {CLASS_NAME, TOOLBAR_CLASS, ITool, TOOL_PREFIX, ILiterallyCanvas, ILiterallyDesktop} from '.';
 
 import * as fscreen from 'fscreen';
 
@@ -15,47 +15,48 @@ import '../style/literallycanvas.css';
 import '../style/index.css';
 
 export const DEFAULT_TOOLS: {[key: string]: ITool} = {
-  select: {
+  SelectShape: {
     tool: (LC, lc) => new LC.tools.SelectShape(lc),
   },
-  pencil: {
+  Pencil: {
     tool: (LC, lc) => new LC.tools.Pencil(lc),
   },
-  eraser: {
+  Eraser: {
     tool: (LC, lc) => new LC.tools.Eraser(lc),
   },
-  line: {
+  Line: {
     tool: (LC, lc) => new LC.tools.Line(lc),
   },
-  ellipse: {
+  Ellipse: {
     tool: (LC, lc) => new LC.tools.Ellipse(lc),
   },
-  text: {
+  Text: {
     tool: (LC, lc) => new LC.tools.Text(lc),
   },
-  undo: {
+  Undo: {
     action: (lc) => lc.undo(),
   },
-  redo: {
+  Redo: {
     action: (lc) => lc.redo(),
   },
   // LC.tools.Polygon,
   // LC.tools.Eyedropper,
-  pan: {
+  Pan: {
     tool: (LC, lc) => new LC.tools.Pan(lc),
   },
-  fullscreen: {
+  Fullscreen: {
     action: (lc) => lc.fullscreen(),
   },
 };
 
 export class LiterallyCanvas extends Widget implements ILiterallyCanvas {
-  private _canvas: any;
+  private _lc: any;
   private _wrapper: HTMLDivElement;
   private _lastRender: string;
   private _drawingChanged = new Signal<this, void>(this);
   private _LC: any;
   private _tools = new Map<string, any>();
+  toolChanged = new Signal<this, string>(this);
   /**
    * Construct a new output widget.
    */
@@ -67,11 +68,11 @@ export class LiterallyCanvas extends Widget implements ILiterallyCanvas {
   }
 
   undo() {
-    this._canvas.undo();
+    this._lc.undo();
   }
 
   redo() {
-    this._canvas.redo();
+    this._lc.redo();
   }
 
   fullscreen() {
@@ -83,7 +84,7 @@ export class LiterallyCanvas extends Widget implements ILiterallyCanvas {
   }
 
   async getCanvas() {
-    if (this._canvas == null) {
+    if (this._lc == null) {
       this._LC = await new Promise((resolve, reject) =>
         require.ensure(
           ['literallycanvas/lib/js/literallycanvas-core'],
@@ -93,18 +94,26 @@ export class LiterallyCanvas extends Widget implements ILiterallyCanvas {
           'literallycanvas'
         )
       );
-      this._canvas = this._LC.init(this._wrapper, {
-        // imageSize: {
-        //   width: window.innerWidth,
-        //   height: window.innerHeight,
-        // },
+      const lc = this._lc = this._LC.init(this._wrapper);
+      lc.setImageSize('infinite', 'infinite');
+      // lc.width = lc.height = 'infinite';
+      // fix weird no-op
+      lc.respondToSizeChange = this._LC.util.matchElementSize(
+        this._wrapper, [lc.backgroundCanvas, lc.canvas], lc.backingScale,
+        () => {
+          lc.keepPanInImageBounds();
+          lc.repaintAllLayers();
+        }
+      );
+      lc.on('drawingChange', () => this._drawingChanged.emit(void 0));
+      lc.on('toolChange', (tool: any) => this.toolChanged.emit(tool.tool.name));
+      this._wrapper.addEventListener('wheel', (evt) => {
+        lc.setZoom(lc.scale + (evt.deltaY / -1000));
       });
-      this._canvas.on('drawingChange', () => {
-        this._drawingChanged.emit(void 0);
-      });
+      lc.respondToSizeChange();
     }
 
-    return this._canvas;
+    return this._lc;
   }
 
   async getSnapshot(): Promise<string> {
@@ -118,14 +127,12 @@ export class LiterallyCanvas extends Widget implements ILiterallyCanvas {
     }
     this._lastRender = snapshot;
     const canvas = await this.getCanvas();
-    canvas.loadSnapshot(JSON.parse(snapshot));
+    canvas.loadSnapshot({...JSON.parse(snapshot), imageSize: null});
   }
 
-  resize(msg: Widget.ResizeMessage): void {
-    super.onResize(msg);
-    if (this._canvas) {
-      this._canvas.backgroundCanvas.width = msg.width;
-      this._canvas.backgroundCanvas.height = msg.height;
+  resizeCanvas(): void {
+    if (this._lc) {
+      this._lc.respondToSizeChange();
     }
   }
 
@@ -133,7 +140,7 @@ export class LiterallyCanvas extends Widget implements ILiterallyCanvas {
     let tool = this._tools.get(toolName);
     if (tool == null) {
       try {
-        tool = DEFAULT_TOOLS[toolName].tool(this._LC, this._canvas);
+        tool = DEFAULT_TOOLS[toolName].tool(this._LC, this._lc);
       } catch (err) {
         console.warn(err);
       }
@@ -142,7 +149,7 @@ export class LiterallyCanvas extends Widget implements ILiterallyCanvas {
       }
     }
     if (tool != null) {
-      this._canvas.setTool(tool);
+      this._lc.setTool(tool);
     }
   }
 }
@@ -163,8 +170,11 @@ export class LiterallyDesktop extends BoxPanel
     super();
     this._mimeType = options.mimeType;
     this.addClass(CLASS_NAME);
+    this._toolbar.addClass(TOOLBAR_CLASS);
 
     const layout = this.layout as BoxLayout;
+    layout.direction = 'left-to-right';
+    layout.spacing = 0;
 
     this._canvas = new LiterallyCanvas();
     this._canvas.drawingChanged.connect(async () => {
@@ -176,6 +186,9 @@ export class LiterallyDesktop extends BoxPanel
           [this._mimeType]: await this._canvas.getSnapshot(),
         },
       });
+    });
+    this._canvas.toolChanged.connect((lc, tool) => {
+      this._toolbar.dataset.tool = tool;
     });
 
     this.makeTools();
@@ -211,7 +224,7 @@ export class LiterallyDesktop extends BoxPanel
 
   protected onResize(msg: Widget.ResizeMessage): void {
     super.onResize(msg);
-    this._canvas.resize(msg);
+    this._canvas.resizeCanvas();
   }
 
   /**

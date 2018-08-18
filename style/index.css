@@ -2,9 +2,9 @@
   --jp-lc-icon: url(img/palette.svg);
 }
 
-.jp-OutputWidgetLiterallyCanvas {
+.jp-LiterallyCanvas {
   --jp-lc-tool-size: 2rem;
-  --jp-private-toolbar-height: var(--jp-lc-tool-size);
+  --jp-private-toolbar-height: unset;
 
   --jp-lc-icon-pencil: url(img/gesture.svg);
   --jp-lc-icon-eraser: url(img/eraser.svg);
@@ -16,58 +16,72 @@
   --jp-lc-icon-line: var(--jp-icon-edit);
   --jp-lc-icon-ellipse: var(--jp-icon-circle);
   --jp-lc-icon-undo: var(--jp-icon-undo);
+  --jp-lc-tool-shadow: inset 0 0px 1px rgba(0, 0, 0, 0.5);
 }
 
 .jp-LiterallyCanvas {
   display: flex;
   flex-direction: column;
+  min-height: 400px;
 }
 
-.jp-LiterallyCanvas > * {
+.jp-LiterallyCanvas .literally {
   flex: 1;
+}
+
+.jp-LiterallyCanvas-Toolbar {
+  flex-direction: column;
+  min-width: calc(var(--jp-lc-tool-size) + 0.25rem);
+  border: 0;
+}
+
+.jp-LiterallyCanvas-Toolbar .jp-Toolbar-button {
+  height: var(--jp-lc-tool-size);
+  width: var(--jp-lc-tool-size);
+  background-size: 80%;
 }
 
 .jp-LiterallyCanvasIcon {
   background-image: var(--jp-lc-icon);
 }
 
-.jp-LiterallyCanvas-Tool-pencil {
+.jp-LiterallyCanvas-Tool-Pencil {
   background-image: var(--jp-lc-icon-pencil);
 }
 
-.jp-LiterallyCanvas-Tool-eraser {
+.jp-LiterallyCanvas-Tool-Eraser {
   background-image: var(--jp-lc-icon-eraser);
 }
 
-.jp-LiterallyCanvas-Tool-line {
+.jp-LiterallyCanvas-Tool-Line {
   background-image: var(--jp-lc-icon-line);
 }
 
-.jp-LiterallyCanvas-Tool-ellipse {
+.jp-LiterallyCanvas-Tool-Ellipse {
   background-image: var(--jp-lc-icon-ellipse);
 }
 
-.jp-LiterallyCanvas-Tool-text {
+.jp-LiterallyCanvas-Tool-Text {
   background-image: var(--jp-lc-icon-text);
 }
 
-.jp-LiterallyCanvas-Tool-undo {
+.jp-LiterallyCanvas-Tool-Undo {
   background-image: var(--jp-lc-icon-undo);
 }
 
-.jp-LiterallyCanvas-Tool-pan {
+.jp-LiterallyCanvas-Tool-Pan {
   background-image: var(--jp-lc-icon-pan);
 }
 
-.jp-LiterallyCanvas-Tool-select {
+.jp-LiterallyCanvas-Tool-SelectShape {
   background-image: var(--jp-lc-icon-select);
 }
 
-.jp-LiterallyCanvas-Tool-fullscreen {
+.jp-LiterallyCanvas-Tool-Fullscreen {
   background-image: var(--jp-lc-icon-fullscreen);
 }
 
-.jp-LiterallyCanvas-Tool-redo {
+.jp-LiterallyCanvas-Tool-Redo {
   background-image: var(--jp-lc-icon-undo);
   -moz-transform: scaleX(-1);
   -o-transform: scaleX(-1);
@@ -77,13 +91,13 @@
   -ms-filter: "FlipH";
 }
 
-.jp-OutputWidgetLiterallyCanvas .jp-Toolbar .jp-Toolbar-button {
-  height: var(--jp-lc-tool-size);
-  width: var(--jp-lc-tool-size);
-  background-size: 80%;
-}
-
-.jp-OutputWidgetLiterallyCanvas canvas {
-  width: 100%;
-  height: 100%;
+.jp-LiterallyCanvas-Toolbar[data-tool="SelectShape"] .jp-LiterallyCanvas-Tool-SelectShape,
+.jp-LiterallyCanvas-Toolbar[data-tool="Pencil"] .jp-LiterallyCanvas-Tool-Pencil,
+.jp-LiterallyCanvas-Toolbar[data-tool="Eraser"] .jp-LiterallyCanvas-Tool-Eraser,
+.jp-LiterallyCanvas-Toolbar[data-tool="Pan"] .jp-LiterallyCanvas-Tool-Pan,
+.jp-LiterallyCanvas-Toolbar[data-tool="Ellipse"] .jp-LiterallyCanvas-Tool-Ellipse,
+.jp-LiterallyCanvas-Toolbar[data-tool="Text"] .jp-LiterallyCanvas-Tool-Text,
+.jp-LiterallyCanvas-Toolbar[data-tool="Line"] .jp-LiterallyCanvas-Tool-Line {
+    background-color: var(--jp-toolbar-active-background);
+    box-shadow: var(--jp-lc-tool-shadow);
 }

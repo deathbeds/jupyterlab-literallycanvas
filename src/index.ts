@@ -8,7 +8,8 @@ export const MIME_TYPES = ['application/literallycanvas+json'];
 /**
  * The class name added to the extension.
  */
-export const CLASS_NAME = 'jp-OutputWidgetLiterallyCanvas';
+export const CLASS_NAME = 'jp-LiterallyCanvas';
+export const TOOLBAR_CLASS = `${CLASS_NAME}-Toolbar`;
 
 /**
  * The plugin ids
@@ -16,7 +17,7 @@ export const CLASS_NAME = 'jp-OutputWidgetLiterallyCanvas';
 export const MIME_PLUGIN_ID = 'jupyterlab-literallycanvas:mime';
 export const LAUNCHER_PLUGIN_ID = 'jupyterlab-literallycanvas:launcher';
 
-export const TOOL_PREFIX = 'jp-LiterallyCanvas-Tool';
+export const TOOL_PREFIX = `${CLASS_NAME}-Tool`;
 
 export const TYPES: {
   [key: string]: {name: string; extensions: string[]};
