@@ -28,10 +28,14 @@ export const TYPES: {
   },
 };
 
+export type TColorKind = 'primary' | 'secondary' | 'background';
+export const COLOR_KINDS: TColorKind[] = ['primary', 'secondary', 'background'];
+
 export interface ILiterallyCanvas extends Widget {
   undo(): void;
   redo(): void;
   fullscreen(): void;
+  setColor(kind: TColorKind, value: string): void;
 }
 
 export interface ILiterallyDesktop extends Widget {
@@ -41,6 +45,7 @@ export interface ILiterallyDesktop extends Widget {
 export interface ITool {
   tool?: (LC: any, lc: ILiterallyCanvas) => any;
   action?: (lc: ILiterallyCanvas) => any;
+  color?: TColorKind;
 }
 
 export const CMD = {

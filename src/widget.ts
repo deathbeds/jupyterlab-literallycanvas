@@ -7,7 +7,7 @@ import {Toolbar, ToolbarButton} from '@jupyterlab/apputils';
 import {Widget, BoxPanel, BoxLayout} from '@phosphor/widgets';
 import {Signal} from '@phosphor/signaling';
 
-import {CLASS_NAME, TOOLBAR_CLASS, ITool, TOOL_PREFIX, ILiterallyCanvas, ILiterallyDesktop} from '.';
+import {CLASS_NAME, TOOLBAR_CLASS, ITool, TOOL_PREFIX, ILiterallyCanvas, ILiterallyDesktop, TColorKind, COLOR_KINDS} from '.';
 
 import * as fscreen from 'fscreen';
 
@@ -15,6 +15,9 @@ import '../style/literallycanvas.css';
 import '../style/index.css';
 
 export const DEFAULT_TOOLS: {[key: string]: ITool} = {
+  Pan: {
+    tool: (LC, lc) => new LC.tools.Pan(lc),
+  },
   SelectShape: {
     tool: (LC, lc) => new LC.tools.SelectShape(lc),
   },
@@ -39,15 +42,25 @@ export const DEFAULT_TOOLS: {[key: string]: ITool} = {
   Redo: {
     action: (lc) => lc.redo(),
   },
+  Stroke: {
+    color: 'primary'
+  },
+  Fill: {
+    color: 'secondary'
+  },
+  BG: {
+    color: 'background'
+  },
   // LC.tools.Polygon,
   // LC.tools.Eyedropper,
-  Pan: {
-    tool: (LC, lc) => new LC.tools.Pan(lc),
-  },
   Fullscreen: {
     action: (lc) => lc.fullscreen(),
   },
 };
+
+export interface IColors {
+  [key: string]: string;
+}
 
 export class LiterallyCanvas extends Widget implements ILiterallyCanvas {
   private _lc: any;
@@ -57,6 +70,7 @@ export class LiterallyCanvas extends Widget implements ILiterallyCanvas {
   private _LC: any;
   private _tools = new Map<string, any>();
   toolChanged = new Signal<this, string>(this);
+  colorsChanged = new Signal<this, IColors>(this);
   /**
    * Construct a new output widget.
    */
@@ -79,11 +93,15 @@ export class LiterallyCanvas extends Widget implements ILiterallyCanvas {
     fscreen.default.requestFullscreen(this.node);
   }
 
+  setColor(kind: TColorKind, value: string) {
+    this._lc.setColor(kind, value);
+  }
+
   get drawingChanged() {
     return this._drawingChanged;
   }
 
-  async getCanvas() {
+  protected async getCanvas() {
     if (this._lc == null) {
       this._LC = await new Promise((resolve, reject) =>
         require.ensure(
@@ -108,9 +126,16 @@ export class LiterallyCanvas extends Widget implements ILiterallyCanvas {
       lc.on('drawingChange', () => this._drawingChanged.emit(void 0));
       lc.on('toolChange', (tool: any) => this.toolChanged.emit(tool.tool.name));
       this._wrapper.addEventListener('wheel', (evt) => {
-        lc.setZoom(lc.scale + (evt.deltaY / -1000));
+        lc.setZoom(lc.scale + (evt.deltaY / -10000));
       });
+      setTimeout(() => this.setTool('Pan'), 100);
       lc.respondToSizeChange();
+      COLOR_KINDS.map((kind) => {
+        lc.on(`${kind}ColorChange`, () => {
+          console.log(`${kind}ColorChange`);
+          this.colorsChanged.emit({...this._lc.colors});
+        });
+      });
     }
 
     return this._lc;
@@ -163,6 +188,7 @@ export class LiterallyDesktop extends BoxPanel
   private _canvas: LiterallyCanvas;
   private _model: IRenderMime.IMimeModel;
   private _toolbar: Toolbar<Widget> = new Toolbar();
+  private _colorButtons: {[key: string]: ToolbarButton} = {};
   /**
    * Construct a new output widget.
    */
@@ -190,6 +216,12 @@ export class LiterallyDesktop extends BoxPanel
     this._canvas.toolChanged.connect((lc, tool) => {
       this._toolbar.dataset.tool = tool;
     });
+    this._canvas.colorsChanged.connect((lc, colors) => {
+      console.log('setting backgrounds');
+      for (let k in this._colorButtons) {
+        this._colorButtons[k].node.style.backgroundColor = colors[k];
+      }
+    });
 
     this.makeTools();
     BoxLayout.setSizeBasis(this._toolbar, 28);
@@ -208,15 +240,29 @@ export class LiterallyDesktop extends BoxPanel
         className: `${TOOL_PREFIX} ${TOOL_PREFIX}-${toolName}`,
         tooltip: toolName,
         onClick: () => {
-          if (DEFAULT_TOOLS[toolName].tool) {
+          if (tool.tool) {
             this._canvas.setTool(toolName);
-          } else if (DEFAULT_TOOLS[toolName].action) {
+          } else if (tool.action) {
             tool.action(this._canvas);
+          } else if (tool.color) {
+            return;
           } else {
             console.log('unknown tool', tool);
           }
         },
       });
+
+      if (tool.color) {
+        this._colorButtons[tool.color] = toolButton;
+        toolButton.addClass(`${CLASS_NAME}-Color`);
+        let input = document.createElement('input');
+        input.type = 'color';
+        input.addEventListener('change', () => {
+          this._canvas.setColor(tool.color, input.value);
+        });
+        toolButton.node.appendChild(input);
+      }
+
       this._toolbar.addItem(toolName, toolButton);
     });
   }
