@@ -33,6 +33,12 @@ export const DEFAULT_TOOLS: {[key: string]: ITool} = {
   Ellipse: {
     tool: (LC, lc) => new LC.tools.Ellipse(lc),
   },
+  Rectangle: {
+    tool: (LC, lc) => new LC.tools.Rectangle(lc),
+  },
+  Polygon: {
+    tool: (LC, lc) => new LC.tools.Polygon(lc),
+  },
   Text: {
     tool: (LC, lc) => new LC.tools.Text(lc),
   },
