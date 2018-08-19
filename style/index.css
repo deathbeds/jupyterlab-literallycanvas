@@ -26,6 +26,8 @@
   flex-wrap: wrap;
   min-height: calc(13 * var(--jp-lc-tool-size));
   overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 
 .jp-OutputArea-output.jp-LiterallyCanvas {
@@ -42,10 +44,26 @@
   border: 0;
 }
 
-.jp-LiterallyCanvas-Toolbar .jp-Toolbar-button {
+.jp-LiterallyCanvas-Toolbar .jp-Toolbar-item {
   height: var(--jp-lc-tool-size);
   width: var(--jp-lc-tool-size);
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+
+.jp-LiterallyCanvas-Toolbar .jp-ToolbarButtonComponent {
+  height: unset;
+  margin: 0;
+  padding: 0;
+}
+
+.jp-LiterallyCanvas-Toolbar .jp-Toolbar-item .jp-Icon {
   background-size: 80%;
+  height: var(--jp-lc-tool-size);
+  width: var(--jp-lc-tool-size);
+  margin: 0;
+  padding: 0;
 }
 
 .jp-LiterallyCanvasIcon {
@@ -106,15 +124,16 @@
   -ms-filter: "FlipH";
 }
 
-.jp-LiterallyCanvas-Toolbar[data-tool="SelectShape"] .jp-LiterallyCanvas-Tool-SelectShape,
+.jp-LiterallyCanvas-Toolbar[data-tool="SelectShape"]
+  .jp-LiterallyCanvas-Tool-SelectShape,
 .jp-LiterallyCanvas-Toolbar[data-tool="Pencil"] .jp-LiterallyCanvas-Tool-Pencil,
 .jp-LiterallyCanvas-Toolbar[data-tool="Eraser"] .jp-LiterallyCanvas-Tool-Eraser,
 .jp-LiterallyCanvas-Toolbar[data-tool="Pan"] .jp-LiterallyCanvas-Tool-Pan,
 .jp-LiterallyCanvas-Toolbar[data-tool="Ellipse"] .jp-LiterallyCanvas-Tool-Ellipse,
 .jp-LiterallyCanvas-Toolbar[data-tool="Text"] .jp-LiterallyCanvas-Tool-Text,
 .jp-LiterallyCanvas-Toolbar[data-tool="Line"] .jp-LiterallyCanvas-Tool-Line {
-    background-color: var(--jp-toolbar-active-background);
-    box-shadow: var(--jp-lc-tool-shadow);
+  background-color: var(--jp-toolbar-active-background);
+  box-shadow: var(--jp-lc-tool-shadow);
 }
 
 /* color stuff */
