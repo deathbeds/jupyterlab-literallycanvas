@@ -7,7 +7,16 @@ import {Toolbar, ToolbarButton} from '@jupyterlab/apputils';
 import {Widget, BoxPanel, BoxLayout} from '@phosphor/widgets';
 import {Signal} from '@phosphor/signaling';
 
-import {CLASS_NAME, TOOLBAR_CLASS, ITool, TOOL_PREFIX, ILiterallyCanvas, ILiterallyDesktop, TColorKind, COLOR_KINDS} from '.';
+import {
+  CLASS_NAME,
+  TOOLBAR_CLASS,
+  ITool,
+  TOOL_PREFIX,
+  ILiterallyCanvas,
+  ILiterallyDesktop,
+  TColorKind,
+  COLOR_KINDS,
+} from '.';
 
 import * as fscreen from 'fscreen';
 
@@ -49,13 +58,13 @@ export const DEFAULT_TOOLS: {[key: string]: ITool} = {
     action: (lc) => lc.redo(),
   },
   Stroke: {
-    color: 'primary'
+    color: 'primary',
   },
   Fill: {
-    color: 'secondary'
+    color: 'secondary',
   },
   BG: {
-    color: 'background'
+    color: 'background',
   },
   // LC.tools.Polygon,
   // LC.tools.Eyedropper,
@@ -96,7 +105,7 @@ export class LiterallyCanvas extends Widget implements ILiterallyCanvas {
   }
 
   fullscreen() {
-    fscreen.default.requestFullscreen(this.node);
+    fscreen.default.requestFullscreen(this._wrapper);
   }
 
   setColor(kind: TColorKind, value: string) {
@@ -118,12 +127,14 @@ export class LiterallyCanvas extends Widget implements ILiterallyCanvas {
           'literallycanvas'
         )
       );
-      const lc = this._lc = this._LC.init(this._wrapper);
+      const lc = (this._lc = this._LC.init(this._wrapper));
       lc.setImageSize('infinite', 'infinite');
       // lc.width = lc.height = 'infinite';
       // fix weird no-op
       lc.respondToSizeChange = this._LC.util.matchElementSize(
-        this._wrapper, [lc.backgroundCanvas, lc.canvas], lc.backingScale,
+        this._wrapper,
+        [lc.backgroundCanvas, lc.canvas],
+        lc.backingScale,
         () => {
           lc.keepPanInImageBounds();
           lc.repaintAllLayers();
@@ -132,7 +143,7 @@ export class LiterallyCanvas extends Widget implements ILiterallyCanvas {
       lc.on('drawingChange', () => this._drawingChanged.emit(void 0));
       lc.on('toolChange', (tool: any) => this.toolChanged.emit(tool.tool.name));
       this._wrapper.addEventListener('wheel', (evt) => {
-        lc.setZoom(lc.scale + (evt.deltaY / -10000));
+        lc.setZoom(lc.scale + evt.deltaY / -10000);
       });
       setTimeout(() => this.setTool('Pan'), 100);
       lc.respondToSizeChange();
@@ -243,7 +254,7 @@ export class LiterallyDesktop extends BoxPanel
     Object.keys(DEFAULT_TOOLS).forEach((toolName) => {
       const tool = DEFAULT_TOOLS[toolName];
       const toolButton = new ToolbarButton({
-        className: `${TOOL_PREFIX} ${TOOL_PREFIX}-${toolName}`,
+        iconClassName: `jp-Icon ${TOOL_PREFIX} ${TOOL_PREFIX}-${toolName}`,
         tooltip: toolName,
         onClick: () => {
           if (tool.tool) {
