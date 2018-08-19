@@ -1,11 +1,11 @@
 {
   "author": "Dead Pixels Collective",
   "dependencies": {
-    "@jupyterlab/application": "^0.17.0",
-    "@jupyterlab/apputils": "^0.17.0",
+    "@jupyterlab/application": "^0.18.2",
+    "@jupyterlab/apputils": "^0.17.2",
     "@jupyterlab/launcher": "^0.17.2",
-    "@jupyterlab/rendermime-interfaces": "^1.1.0",
-    "@jupyterlab/filebrowser": "^0.17.3",
+    "@jupyterlab/rendermime-interfaces": "^1.1.5",
+    "@jupyterlab/filebrowser": "^0.18.2",
     "@phosphor/widgets": "^1.6.0",
     "literallycanvas": "^0.5.2",
     "fscreen": "^1.0.2"
@@ -47,5 +47,5 @@
     "lint:tslint": "tslint --fix ./src/**/*.ts",
     "watch": "tsc -w"
   },
-  "version": "0.2.0"
+  "version": "0.3.0"
 }
